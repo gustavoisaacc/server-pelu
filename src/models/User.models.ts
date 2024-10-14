@@ -15,22 +15,25 @@ export type UserType = Document & {
   service: string;
 };
 
-const userSchema: Schema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
+const userSchema: Schema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true },
+    direction: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, trim: true },
+    password: { type: String, required: true, trim: true },
+    roles: { type: [String], default: ["user"] },
+    service: { type: String, trim: true },
   },
-  lastName: { type: String, required: true, trim: true },
-  phone: { type: String, required: true, trim: true },
-  direction: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, trim: true },
-  password: { type: String, required: true, trim: true },
-  roles: { type: [String], default: ["user"] },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  service: { type: String, trim: true },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const User = mongoose.model<UserType>("User", userSchema);
 export default User;

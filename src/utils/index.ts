@@ -1,22 +1,47 @@
+import { Categories } from "../models/Category.models";
 import { Service } from "../models/service.models";
 
-export const initialStat = async () => {
+export const initialStatCategory = async () => {
+  try {
+    const categories = await Categories.estimatedDocumentCount();
+    if (categories > 0) return;
+    const value = await Promise.allSettled([
+      new Categories({
+        name: "Servicios de Corte y Estilo",
+      }).save(),
+      new Categories({
+        name: "Peinado y estilizado",
+      }).save(),
+      new Categories({
+        name: " Tratamientos para el Cabello",
+      }).save(),
+      new Categories({
+        name: "Servicios para Eventos y Maquillaje",
+      }).save(),
+    ]);
+    console.log(value);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const initialStatService = async () => {
   try {
     const service = await Service.estimatedDocumentCount();
     if (service > 0) return;
     const value = await Promise.allSettled([
       new Service({
-        name: "Servicios de Corte y Estilo",
+        name: "Corte de cabello",
         description:
           "Recorte y diseño del cabello para estilos personalizados, ya sean clásicos o modernos.",
-        duration: 1,
+        duration: 30,
         price: 100,
       }).save(),
       new Service({
-        name: "Peinado y estilizado",
+        name: "Corte de barba",
         description:
-          "Estilismo para eventos o reuniones, con opciones como alisado, rizos, y trenzados.",
-        duration: 1,
+          "Recorte, diseño y perfilado de barba y bigote con afeitado de precisión.",
+        duration: 10,
         price: 100,
       }).save(),
       new Service({
