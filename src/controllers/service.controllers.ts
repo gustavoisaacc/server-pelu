@@ -54,18 +54,21 @@ export const updateService = async (req, res) => {
     if (!service) {
       return res.status(404).json({ message: "Servicio no encontrado" });
     }
+
     if (service.category.toString() !== req.category.id) {
       return res.status(400).json({ message: "accion no valida" });
     }
-    service.name = data.name;
-    service.description = data.description;
-    service.duration = data.duration;
-    service.price = data.price;
-    service.discount = data.discount;
-    service.isPopular = data.isPopular;
-    service.state = data.state;
+    service.name = data.name || service.name;
+    service.description = data.description || service.description;
+    service.duration = data.duration || service.duration;
+    service.price = data.price || service.price;
+    service.discount = data.discount || service.discount;
+    service.isPopular = data.isPopular || service.isPopular;
+    service.state = data.state || service.state;
     await service.save();
-    res.json(service);
+    return res
+      .status(200)
+      .json({ message: "El servicio fue actualizado correctamente" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error al actualizar el servicio" });
@@ -86,7 +89,7 @@ export const deleteService = async (req, res) => {
       (service) => service.toString() !== id
     );
     await Promise.allSettled([service.deleteOne(), req.category.save()]);
-    res.json({ message: "Servicio eliminado" });
+    return res.json({ message: "Servicio eliminado" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error al eliminar el servicio" });

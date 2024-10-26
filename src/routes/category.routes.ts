@@ -60,7 +60,6 @@ routeCategory.post(
       }
     }),
   body("description").notEmpty().withMessage("La description es obligator"),
-  body("duration").isNumeric().withMessage("La duración debe ser un número"),
   body("price").isNumeric().withMessage("El precio debe ser un número"),
   handleInputError,
   serviceController.create
@@ -81,17 +80,8 @@ routeCategory.put(
   "/:categoryId/service/:id",
   validateCategoryExists,
   param("id").isMongoId().withMessage("id no válido"),
-  body("name")
-    .notEmpty()
-    .withMessage("El nombre es obligator")
-    .custom(async (name) => {
-      const existingCategory = await Service.findOne({ name });
-      if (existingCategory) {
-        throw new Error("El nombre ya existe en la base de datos");
-      }
-    }),
+  body("name").notEmpty().withMessage("El nombre es obligator"),
   body("description").notEmpty().withMessage("La description es obligator"),
-  body("duration").isNumeric().withMessage("La duración debe ser un número"),
   body("price").isNumeric().withMessage("El precio debe ser un número"),
   handleInputError,
   serviceController.updateService

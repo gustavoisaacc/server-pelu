@@ -15,11 +15,11 @@ const serviceSchema: Schema = new Schema(
   {
     name: { type: String, required: true, trim: true, unique: true },
     description: { type: String, required: true, trim: true },
-    duration: { type: Number, required: true, trim: true },
+    duration: { type: String, required: true, trim: true },
     price: { type: Number, required: true, trim: true },
-    discount: { type: Number, required: true, trim: true, default: 0 },
-    isPopular: { type: Boolean, required: true, trim: true, default: false },
-    state: { type: Boolean, required: true, trim: true, default: false },
+    discount: { type: Number, trim: true, default: 0 },
+    isPopular: { type: Boolean, trim: true, default: false },
+    state: { type: Boolean, trim: true, default: false },
     category: { type: Types.ObjectId, ref: "Categories" },
   },
   {
