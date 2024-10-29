@@ -8,6 +8,7 @@ import { initialStatCategory } from "./utils";
 import { routeAppointment } from "./routes/appointment.routes";
 import { routeCategory } from "./routes/category.routes";
 import { configCors } from "./config/cors";
+import { routeAuth } from "./routes/auth.routes";
 
 connectDB();
 initialStatCategory();
@@ -22,5 +23,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // Import routes
+app.use("/api/v1/auth", routeAuth);
 app.use("/api/v1/appointment", routeAppointment);
 app.use("/api/v1/category", routeCategory);

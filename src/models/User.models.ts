@@ -1,6 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-const st;
+const ROLES = {
+  ADMIN: "admin",
+  USER: "user",
+  CUSTOMER: "customer",
+} as const;
 
 export type UserType = Document & {
   name: string;
@@ -10,8 +14,6 @@ export type UserType = Document & {
   email: string;
   password: string;
   roles: string[];
-  createdAt: Date;
-  updatedAt: Date;
   service: string;
 };
 
@@ -25,9 +27,15 @@ const userSchema: Schema = new Schema(
     lastName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
     direction: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
     password: { type: String, required: true, trim: true },
-    roles: { type: [String], default: ["user"] },
+    roles: { type: [String], default: [ROLES.USER] },
     service: { type: String, trim: true },
   },
   {
