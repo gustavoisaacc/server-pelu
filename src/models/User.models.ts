@@ -12,6 +12,7 @@ export type UserType = Document & {
   phone: string;
   direction: string;
   email: string;
+  confirm: boolean;
   password: string;
   roles: string[];
   service: string;
@@ -33,6 +34,10 @@ const userSchema: Schema = new Schema(
       unique: true,
       trim: true,
       lowercase: true,
+    },
+    confirm: {
+      type: Boolean,
+      default: false,
     },
     password: { type: String, required: true, trim: true },
     roles: { type: [String], default: [ROLES.USER] },
