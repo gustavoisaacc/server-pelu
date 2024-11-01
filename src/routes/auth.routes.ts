@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as AuthControler from "../controllers/auth.controllers";
 import { handleInputError } from "../middleware/validator";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 export const routeAuth = Router();
 
@@ -51,4 +51,26 @@ routeAuth.post(
   body("email").isEmail().withMessage("El E-mail no es valido"),
   handleInputError,
   AuthControler.forgotPassword
+);
+routeAuth.post(
+  "/validate-token",
+  body("token").notEmpty().withMessage("Debe ingresar un token"),
+  handleInputError,
+  AuthControler.ValidateTokenToChangePassword
+);
+
+routeAuth.post(
+  "/update-password/:token",
+  param("token").isNumeric().withMessage("token no valido"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("El password debe contener minimo 8 caracteres"),
+  body("confirmation_password").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Los password no son iguales");
+    }
+    return true;
+  }),
+  handleInputError,
+  AuthControler.newPassword
 );

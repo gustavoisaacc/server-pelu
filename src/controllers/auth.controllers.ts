@@ -155,3 +155,43 @@ export const forgotPassword = async (req, res) => {
     res.status(500).json({ message: "Error al crear el usuario" });
   }
 };
+
+export const ValidateTokenToChangePassword = async (req, res) => {
+  const { token } = req.body;
+  try {
+    const isTokenexists = await Token.findOne({ token });
+    if (!isTokenexists) {
+      const error = new Error("Token no valido");
+      return res.status(401).json({ message: error.message });
+    }
+
+    res.status(200).json({
+      message: "Token valido, define tu nuevo password",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al crear el usuario" });
+  }
+};
+
+export const newPassword = async (req, res) => {
+  const { token } = req.params;
+  try {
+    const isTokenexists = await Token.findOne({ token });
+    if (!isTokenexists) {
+      const error = new Error("Token no valido");
+      return res.status(401).json({ message: error.message });
+    }
+
+    const user = await User.findById(isTokenexists.user);
+    console.log("🚀 ~ newPassword ~ user:", user);
+    user.password = await hashPassword(req.body.password);
+    await Promise.allSettled([user.save(), isTokenexists.deleteOne()]);
+    res.status(200).json({
+      message: "El Password se actualizo correctamente",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al crear el usuario" });
+  }
+};
