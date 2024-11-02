@@ -184,7 +184,6 @@ export const newPassword = async (req, res) => {
     }
 
     const user = await User.findById(isTokenexists.user);
-    console.log("🚀 ~ newPassword ~ user:", user);
     user.password = await hashPassword(req.body.password);
     await Promise.allSettled([user.save(), isTokenexists.deleteOne()]);
     res.status(200).json({
