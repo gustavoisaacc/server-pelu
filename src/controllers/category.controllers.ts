@@ -1,8 +1,9 @@
 import { Categories } from "../models/Category.models";
 
 export const create = async (req, res) => {
+  const category = new Categories(req.body);
+  category.manager = req.user.id;
   try {
-    const category = new Categories(req.body);
     await category.save();
     res.status(201).json({ message: "Categoría creada correctamente" });
   } catch (error) {

@@ -6,11 +6,13 @@ import * as CategoryController from "../controllers/category.controllers";
 import * as serviceController from "../controllers/service.controllers";
 import { validateCategoryExists } from "../middleware/category";
 import { Service } from "../models/service.models";
+import { isAuth } from "../middleware/validate";
 
 export const routeCategory = express.Router();
 
 routeCategory.post(
   "/",
+  isAuth,
   body("name")
     .notEmpty()
     .withMessage("El nombre es obligatorio")

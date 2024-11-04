@@ -11,7 +11,6 @@ import { configCors } from "./config/cors";
 import { routeAuth } from "./routes/auth.routes";
 
 connectDB();
-initialStatCategory();
 dotenv.config();
 
 export const app = express();

@@ -1,9 +1,9 @@
-import { token } from "morgan";
 import { sendEmail, sendPasswordResetToken } from "../config/email";
 import { Token } from "../models/Token";
 import User from "../models/User.models";
 import { checkPassword, hashPassword } from "../utils/hash";
 import { generateToken } from "../utils/token";
+import { generateJWT } from "../utils/jwt";
 
 export const createAccount = async (req, res) => {
   const { password, email } = req.body;
@@ -79,10 +79,13 @@ export const login = async (req, res) => {
       const error = new Error("Resiva el email y confirma tu cuneta");
       return res.status(401).json({ message: error.message });
     }
-    res.status(200).json({ message: "autenticado" });
+
+    const token = generateJWT({ id: user.id.toString() });
+
+    res.status(200).json({ token: token });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al crear el usuario" });
+    res.status(500).json({ message: "Error de credenciales del usuario" });
   }
 };
 
