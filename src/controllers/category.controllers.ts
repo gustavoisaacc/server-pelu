@@ -14,7 +14,15 @@ export const create = async (req, res) => {
 
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await Categories.find();
+    const categories = await Categories.find({
+      $or: [
+        {
+          manager: {
+            $in: req.user.id,
+          },
+        },
+      ],
+    });
     res.json(categories);
   } catch (error) {
     console.log(error);
@@ -30,6 +38,10 @@ export const getCategoryById = async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
+    if (category.manager.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Acción no valida" });
+    }
+
     res.json(category);
   } catch (error) {
     console.log(error);
@@ -45,6 +57,9 @@ export const updateCategory = async (req, res) => {
     const category = await Categories.findById(id);
     if (!category) {
       return res.status(404).json({ message: "Categoría no encontrada" });
+    }
+    if (category.manager.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Acción no valida" });
     }
     category.name = data.name;
     await category.save();
@@ -62,6 +77,9 @@ export const deleteCategory = async (req, res) => {
     const category = await Categories.findById(id);
     if (!category) {
       return res.status(404).json({ message: "Categoría no encontrada" });
+    }
+    if (category.manager.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Acción no valida" });
     }
     await category.deleteOne();
     res.json({ message: "Categoría fue eliminada" });

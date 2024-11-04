@@ -1,9 +1,6 @@
 import { Service } from "../models/service.models";
 
 export const create = async (req, res) => {
-  console.log("🚀 ~ create ~ req.body:", req.body);
-  const data = req.body;
-
   try {
     const service = new Service(req.body);
     service.category = req.category.id;

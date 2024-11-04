@@ -10,7 +10,7 @@ export interface Icategories extends Document {
 
 const categoriesSchema: Schema = new Schema(
   {
-    name: { type: String, required: true, trim: true, unique: true },
+    name: { type: String, required: true, trim: true },
     services: [{ type: Schema.Types.ObjectId, ref: "Service" }],
     manager: {
       type: Types.ObjectId,

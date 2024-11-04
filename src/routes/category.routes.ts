@@ -9,10 +9,9 @@ import { Service } from "../models/service.models";
 import { isAuth } from "../middleware/validate";
 
 export const routeCategory = express.Router();
-
+routeCategory.use(isAuth);
 routeCategory.post(
   "/",
-  isAuth,
   body("name")
     .notEmpty()
     .withMessage("El nombre es obligatorio")

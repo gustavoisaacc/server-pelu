@@ -35,7 +35,15 @@ export const create = async (req, res) => {
 
 export const getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
+    const appointments = await Appointment.find({
+      $or: [
+        {
+          manager: {
+            $in: req.user._id,
+          },
+        },
+      ],
+    });
     res.json(appointments);
   } catch (error) {
     console.error(error);

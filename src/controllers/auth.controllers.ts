@@ -70,9 +70,8 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: error.message });
     }
     const isPassworCorreact = await checkPassword(password, user.password);
-    console.log("🚀 ~ login ~ isPassworCorreact:", isPassworCorreact);
     if (!isPassworCorreact) {
-      const error = new Error("Por favor revise password");
+      const error = new Error("Por favor revise su email o password");
       return res.status(401).json({ message: error.message });
     }
     if (!user.confirm) {
