@@ -92,6 +92,7 @@ export const requestCode = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log("🚀 ~ requestCode ~ user:", user);
     if (!user) {
       const error = new Error("El usuario no esta registrado ");
       return res.status(409).json({ message: error.message });
@@ -129,6 +130,7 @@ export const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log("🚀 ~ forgotPassword ~ email:", user);
     if (!user) {
       const error = new Error("El usuario no esta registrado ");
       return res.status(409).json({ message: error.message });
@@ -195,4 +197,8 @@ export const newPassword = async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Error al crear el usuario" });
   }
+};
+
+export const user = (req, res) => {
+  return res.json(req.user);
 };

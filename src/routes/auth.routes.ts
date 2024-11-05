@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as AuthControler from "../controllers/auth.controllers";
 import { handleInputError } from "../middleware/validator";
 import { body, param } from "express-validator";
+import { isAuth } from "../middleware/validate";
 
 export const routeAuth = Router();
 
@@ -74,3 +75,5 @@ routeAuth.post(
   handleInputError,
   AuthControler.newPassword
 );
+
+routeAuth.get("/user", isAuth, AuthControler.user);

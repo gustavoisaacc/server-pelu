@@ -21,7 +21,7 @@ export async function isAuth(req: Request, res: Response, next: NextFunction) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (typeof decoded === "object" && decoded.id) {
       const { id } = decoded;
-      const user = await User.findById(id).select("-password -confirm");
+      const user = await User.findById(id).select("-password");
       if (!user) {
         res.status(401).json({
           message: "Usuario no autorizado. Usuario no encontrado.",
