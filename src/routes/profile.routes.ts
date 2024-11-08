@@ -16,7 +16,7 @@ routeProfile.post(
 );
 
 routeProfile.get("/avatar", isAuth, userController.getAvatarURL);
-routeProfile.post(
+routeProfile.put(
   "/edit-user",
   isAuth,
   body("name").notEmpty().withMessage("El campo nombre no debe quedar vacio"),
