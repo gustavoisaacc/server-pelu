@@ -198,7 +198,3 @@ export const newPassword = async (req, res) => {
     res.status(500).json({ message: "Error al crear el usuario" });
   }
 };
-
-export const user = (req, res) => {
-  return res.json(req.user);
-};

@@ -75,5 +75,3 @@ routeAuth.post(
   handleInputError,
   AuthControler.newPassword
 );
-
-routeAuth.get("/user", isAuth, AuthControler.user);
