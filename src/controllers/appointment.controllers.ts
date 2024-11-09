@@ -2,31 +2,23 @@ import { Appointment } from "../models/Appointment.models";
 export const create = async (req, res) => {
   const data = req.body;
   const userId = req.user.id;
-
-  // Verificar si 'data' está definido
-  if (!data) {
-    return res.status(400).json({
-      message: "El cuerpo de la solicitud es inválido. Se requiere 'data'.",
-    });
-  }
-
   try {
     const { date, startTime, delay } = data;
-
-    // Guardar la fecha directamente
-    const appointmentDate = new Date(date); // date se guardará como un objeto Date
-
-    // Guardar startTime como un número (hora en formato 24)
-    const appointmentStartTime = startTime; // Puedes guardarlo como cadena "10:00" o como un número 10, según lo que necesites
-
+    const appointmentDate = new Date(date);
+    const appointmentTime = await Appointment.findOne({ startTime });
+    if (appointmentTime) {
+      return res.status(500).json({
+        message:
+          "La hora seleccionada ya está ocupada. Por favor, elija otra hora.",
+      });
+    }
     const appointment = new Appointment({
-      date: appointmentDate, // Se guarda como un objeto Date
-      startTime: appointmentStartTime, // Se guarda como una cadena o número
+      date: appointmentDate,
+      startTime,
       delay,
+      manager: userId,
     });
-
     await appointment.save();
-
     res.status(201).json({ message: "Turno de cita creado correctamente" });
   } catch (error) {
     console.error(error);

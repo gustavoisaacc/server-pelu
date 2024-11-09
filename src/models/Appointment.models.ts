@@ -1,10 +1,12 @@
-import mongoose, { Document, Schema, PopulatedDoc } from "mongoose";
+import mongoose, { Document, Schema, PopulatedDoc, Types } from "mongoose";
+import { UserType } from "./User.models";
 
 export type AppointmentType = Document & {
   date: Date;
   startTime: Date;
   delay: number;
   state: boolean;
+  manager: PopulatedDoc<UserType>;
 };
 
 const AppointmentSchema = new Schema(
@@ -13,6 +15,10 @@ const AppointmentSchema = new Schema(
     startTime: { type: String, required: true },
     delay: { type: Number, required: true },
     state: { type: Boolean, required: true, default: false },
+    manager: {
+      type: Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

@@ -2,12 +2,14 @@ import express from "express";
 import * as appointmentController from "../controllers/appointment.controllers";
 import { body, param } from "express-validator";
 import { handleInputError } from "../middleware/validator";
+import { isAuth } from "../middleware/validate";
 
 // Define el router para las rutas de los turnos de cita.
 export const routeAppointment = express.Router();
 
 routeAppointment.post(
   "/",
+  isAuth,
   body("date")
     .notEmpty()
     .withMessage("La fecha es obligatoria")
