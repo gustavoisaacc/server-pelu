@@ -22,6 +22,7 @@ export async function isAuth(req: Request, res: Response, next: NextFunction) {
     if (typeof decoded === "object" && decoded.id) {
       const { id } = decoded;
       const user = await User.findById(id).select("-password");
+      console.log("🚀 ~ isAuth ~ user:", user);
       if (!user) {
         res.status(401).json({
           message: "Usuario no autorizado. Usuario no encontrado.",

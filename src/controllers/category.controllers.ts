@@ -1,8 +1,11 @@
 import { Categories } from "../models/Category.models";
 
 export const create = async (req, res) => {
+  console.log("🚀 ~ create ~ req:", req);
   const category = new Categories(req.body);
+  console.log("🚀 ~ create ~ req:", req);
   category.manager = req.user.id;
+  console.log("🚀 ~ create ~ req:", req);
   try {
     await category.save();
     res.status(201).json({ message: "Categoría creada correctamente" });
@@ -13,6 +16,8 @@ export const create = async (req, res) => {
 };
 
 export const getAllCategories = async (req, res) => {
+  console.log("🚀 ~ getAllCategories ~ req:", req.user.id);
+
   try {
     const categories = await Categories.find({
       $or: [
@@ -50,8 +55,11 @@ export const getCategoryById = async (req, res) => {
 };
 
 export const updateCategory = async (req, res) => {
+  console.log("🚀 ~ updateCategory ~ req:", req);
   const id = req.params.id;
+  console.log("🚀 ~ updateCategory ~ req:", req);
   const data = req.body;
+  console.log("🚀 ~ updateCategory ~ req:", req);
 
   try {
     const category = await Categories.findById(id);
@@ -59,6 +67,7 @@ export const updateCategory = async (req, res) => {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
     if (category.manager.toString() !== req.user.id) {
+      console.log("🚀 ~ updateCategory ~ req:", req);
       return res.status(404).json({ message: "Acción no valida" });
     }
     category.name = data.name;
@@ -71,7 +80,9 @@ export const updateCategory = async (req, res) => {
 };
 
 export const deleteCategory = async (req, res) => {
+  console.log("🚀 ~ deleteCategory ~ req:", req);
   const id = req.params.id;
+  console.log("🚀 ~ deleteCategory ~ req:", req);
 
   try {
     const category = await Categories.findById(id);
@@ -79,6 +90,7 @@ export const deleteCategory = async (req, res) => {
       return res.status(404).json({ message: "Categoría no encontrada" });
     }
     if (category.manager.toString() !== req.user.id) {
+      console.log("🚀 ~ deleteCategory ~ req:", req);
       return res.status(404).json({ message: "Acción no valida" });
     }
     await category.deleteOne();

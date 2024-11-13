@@ -6,10 +6,9 @@ import { isAuth } from "../middleware/validate";
 
 // Define el router para las rutas de los turnos de cita.
 export const routeAppointment = express.Router();
-
+routeAppointment.use(isAuth);
 routeAppointment.post(
   "/",
-  isAuth,
   body("date")
     .notEmpty()
     .withMessage("La fecha es obligatoria")

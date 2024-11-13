@@ -18,6 +18,7 @@ export const create = async (req, res) => {
       delay,
       manager: userId,
     });
+    console.log("🚀 ~ create ~ appointment:", appointment);
     await appointment.save();
     res.status(201).json({ message: "Turno de cita creado correctamente" });
   } catch (error) {
@@ -32,11 +33,12 @@ export const getAllAppointments = async (req, res) => {
       $or: [
         {
           manager: {
-            $in: req.user._id,
+            $in: req.user.id,
           },
         },
       ],
     });
+    console.log("🚀 ~ getAllAppointments ~ appointments:", appointments);
     res.json(appointments);
   } catch (error) {
     console.error(error);
