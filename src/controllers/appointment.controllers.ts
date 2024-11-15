@@ -4,7 +4,7 @@ export const create = async (req, res) => {
   const userId = req.user.id;
   try {
     const { date, startTime, delay } = data;
-    const appointmentDate = new Date(date);
+    const appointmentDate = new Date(date + "T00:00:00");
     const appointmentTime = await Appointment.findOne({ startTime });
     if (appointmentTime) {
       return res.status(500).json({
@@ -38,7 +38,6 @@ export const getAllAppointments = async (req, res) => {
         },
       ],
     });
-    console.log("🚀 ~ getAllAppointments ~ appointments:", appointments);
     res.json(appointments);
   } catch (error) {
     console.error(error);
@@ -64,14 +63,21 @@ export const getAppointmentsById = async (req, res) => {
 export const updateAppointment = async (req, res) => {
   const id = req.params.id;
   const data = req.body;
+  console.log("🚀 ~ updateAppointment ~ data:", data);
+  console.log("🚀 ~ updateAppointment ~ id:", id);
+  const [year, month, day] = data.date.split("-").map(Number);
+  const appointmentDate = new Date(Date.UTC(year, month - 1, day));
+  console.log("🚀 ~ updateAppointment ~ appointmentDate:", appointmentDate);
 
   try {
-    const appointment = await Appointment.findByIdAndUpdate(id, data, {
-      new: true,
-    });
+    const appointment = await Appointment.findById(id);
     if (!appointment) {
       return res.status(404).json({ message: "Turno de cita no encontrado" });
     }
+    appointment.date = appointmentDate;
+    appointment.startTime = data.startTime;
+    appointment.delay = data.delay;
+    await appointment.save();
     res.json({ message: "Turno fue actualizado" });
   } catch (error) {
     console.error(error);

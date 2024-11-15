@@ -80,8 +80,6 @@ routeAppointment.put(
   body("date")
     .notEmpty()
     .withMessage("La fecha es obligatoria")
-    .isISO8601()
-    .withMessage("Formato de fecha inválido. Utiliza un formato ISO 8601.")
     .custom((value) => {
       const selectedDate = new Date(value);
 
@@ -123,11 +121,19 @@ routeAppointment.put(
     .withMessage("Formato de hora inválido. Usa HH:MM en formato 24 horas.")
     .custom((value) => {
       const [hour, minute] = value.split(":").map(Number);
+
+      // Validación de horas
       if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
         throw new Error(
           "La hora no es válida. Debe estar entre 00:00 y 23:59."
         );
       }
+
+      // Validación de intervalos de 30 minutos (múltiplos de 30 minutos)
+      if (minute % 30 !== 0) {
+        throw new Error("La hora debe ser un múltiplo de 30 minutos.");
+      }
+
       return true;
     }),
   body("delay").notEmpty().withMessage("El retraso es obligatorio"),

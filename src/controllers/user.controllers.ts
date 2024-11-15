@@ -2,6 +2,7 @@ import { Avatar } from "../models/Avatar";
 import fs from "fs";
 import path from "path";
 import User from "../models/User.models";
+import { Appointment } from "../models/Appointment.models";
 
 export const user = (req, res) => {
   return res.json(req.user);
@@ -90,4 +91,54 @@ export const editProfile = async (req, res) => {
       .status(500)
       .json({ message: `Error al actualizar usuario: ${error.message}` });
   }
+};
+
+export const getAllUser = async (req, res) => {
+  try {
+    // Obtener todos los usuarios con sus nombres y apellidos, usando _id en lugar de id, y convertir los documentos a objetos JS simples
+    const users = await User.find().select("_id name lastName").lean();
+
+    // Mapear cada usuario para agregar el URL del avatar correspondiente
+    const usersWithAvatars = await Promise.all(
+      users.map(async (user) => {
+        // Buscar el avatar asociado con el usuario actual
+        const avatar = await Avatar.findOne({ user: user._id })
+          .select("url")
+          .lean();
+
+        // Retornar el usuario con el avatar URL
+        return {
+          id: user._id,
+          name: user.name,
+          lastName: user.lastName,
+          avatarUrl: avatar ? avatar.url : null, // Asegura que se incluya el URL o null si no existe avatar
+        };
+      })
+    );
+
+    res.json(usersWithAvatars);
+  } catch (error) {
+    console.error("Error al obtener los usuarios y avatares:", error);
+    res
+      .status(500)
+      .json({ message: "Error al obtener los usuarios y avatares" });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return;
+    }
+    const avatar = await Avatar.find({ user: req.params.id });
+    const appointment = await Appointment.find({ manager: req.params.id });
+
+    const fullUser = {
+      user,
+      avatar,
+      appointment,
+    };
+    res.json(fullUser);
+  } catch (error) {}
 };
