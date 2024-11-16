@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import User from "../models/User.models";
 import { Appointment } from "../models/Appointment.models";
+import { Service } from "../models/service.models";
 
 export const user = (req, res) => {
   return res.json(req.user);
@@ -102,16 +103,19 @@ export const getAllUser = async (req, res) => {
     const usersWithAvatars = await Promise.all(
       users.map(async (user) => {
         // Buscar el avatar asociado con el usuario actual
-        const avatar = await Avatar.findOne({ user: user._id })
-          .select("url")
-          .lean();
+        const avatar = await Avatar.findOne({ user: user._id }).select("url");
+
+        // Construir la URL completa solo si existe el avatar
+        const avatarUrl = avatar
+          ? `${req.protocol}://${req.get("host")}/${avatar.url}`
+          : null;
 
         // Retornar el usuario con el avatar URL
         return {
           id: user._id,
           name: user.name,
           lastName: user.lastName,
-          avatarUrl: avatar ? avatar.url : null, // Asegura que se incluya el URL o null si no existe avatar
+          avatarUrl, // Asegura que se incluya el URL o null si no existe avatar
         };
       })
     );
@@ -127,18 +131,38 @@ export const getAllUser = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return;
-    }
-    const avatar = await Avatar.find({ user: req.params.id });
-    const appointment = await Appointment.find({ manager: req.params.id });
+    const { id } = req.params;
 
+    // Busca al usuario por ID
+    const user = await User.findById(id).select("-password").lean();
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Busca el avatar asociado al usuario
+    const avatar = await Avatar.findOne({ user: id }).select("url").lean();
+    const avatarUrl = avatar
+      ? `${req.protocol}://${req.get("host")}/${avatar.url}`
+      : null;
+
+    // Busca las citas asociadas al usuario
+    const appointments = await Appointment.find({ manager: id }).lean();
+
+    // Construye el objeto de respuesta
     const fullUser = {
-      user,
-      avatar,
-      appointment,
+      id: user._id,
+      name: user.name,
+      lastName: user.lastName,
+      phone: user.phone,
+      service: user.service,
+      direction: user.direction,
+      avatarUrl,
+      appointments,
     };
+
     res.json(fullUser);
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error al obtener el usuario:", error);
+    res.status(500).json({ message: "Error al obtener el usuario" });
+  }
 };
