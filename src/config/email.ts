@@ -215,3 +215,54 @@ export async function sendPasswordResetToken(
     console.error("Error al enviar el correo: ", error);
   }
 }
+export const sendConfirmationEmails = (
+  clientEmail: string,
+  barberEmail: string,
+  clientPhone: string,
+  newReservation: any
+) => {
+  const subject = "Confirmación de Turno y Pago";
+  const text = `¡Gracias por tu reserva! Tu cita está confirmada:
+    Servicio: ${newReservation.name}
+    Precio: $${newReservation.price}
+    Duración: ${newReservation.duration}
+    Fecha: ${newReservation.date}
+    Hora: ${newReservation.startTime}
+    Demora: ${newReservation.delay}
+    Teléfono del cliente: ${clientPhone}`;
+
+  // Enviar correo al cliente
+  const clientMailOptions = {
+    from: "tu-email@gmail.com",
+    to: clientEmail,
+    subject,
+    text,
+  };
+
+  // Enviar correo al peluquero
+  const barberMailOptions = {
+    from: "tu-email@gmail.com",
+    to: barberEmail,
+    subject: `Nueva Reserva de Cita`,
+    text: `Se ha confirmado una nueva cita:
+      Cliente: ${clientEmail}
+      Teléfono: ${clientPhone}
+      ${text}`,
+  };
+
+  transporter.sendMail(clientMailOptions, (error, info) => {
+    if (error) {
+      console.log("Error al enviar correo al cliente:", error);
+    } else {
+      console.log("Correo enviado al cliente:", info.response);
+    }
+  });
+
+  transporter.sendMail(barberMailOptions, (error, info) => {
+    if (error) {
+      console.log("Error al enviar correo al peluquero:", error);
+    } else {
+      console.log("Correo enviado al peluquero:", info.response);
+    }
+  });
+};

@@ -6,9 +6,9 @@ import { isAuth } from "../middleware/validate";
 
 // Define el router para las rutas de los turnos de cita.
 export const routeAppointment = express.Router();
-routeAppointment.use(isAuth);
 routeAppointment.post(
   "/",
+  isAuth,
   body("date")
     .notEmpty()
     .withMessage("La fecha es obligatoria")
@@ -67,7 +67,7 @@ routeAppointment.post(
   appointmentController.create
 );
 
-routeAppointment.get("/", appointmentController.getAllAppointments);
+routeAppointment.get("/", isAuth, appointmentController.getAllAppointments);
 routeAppointment.get(
   "/:id",
   param("id").isMongoId().withMessage("id no existe"),
@@ -76,6 +76,7 @@ routeAppointment.get(
 );
 routeAppointment.put(
   "/:id",
+  isAuth,
   param("id").isMongoId().withMessage("id no existe"),
   body("date")
     .notEmpty()
@@ -143,7 +144,15 @@ routeAppointment.put(
 
 routeAppointment.delete(
   "/:id",
+  isAuth,
   param("id").isMongoId().withMessage("id no existe"),
   handleInputError,
   appointmentController.deleteAppointment
+);
+
+routeAppointment.get(
+  "/category/:id",
+  param("id").isMongoId().withMessage("id no existe"),
+  handleInputError,
+  appointmentController.getCategoriesInAppoitment
 );

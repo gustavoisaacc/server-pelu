@@ -11,6 +11,7 @@ import { configCors } from "./config/cors";
 import { routeAuth } from "./routes/auth.routes";
 import multer from "multer";
 import { routeProfile } from "./routes/profile.routes";
+import { routeDetails } from "./routes/details.routes";
 
 connectDB();
 dotenv.config();
@@ -31,6 +32,7 @@ app.use("/api/v1/auth", routeAuth);
 app.use("/api/v1/appointment", routeAppointment);
 app.use("/api/v1/category", routeCategory);
 app.use("/api/v1/", routeProfile);
+app.use("/api/v1/detail", routeDetails);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {

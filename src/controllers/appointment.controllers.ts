@@ -1,4 +1,5 @@
 import { Appointment } from "../models/Appointment.models";
+import { Categories } from "../models/Category.models";
 export const create = async (req, res) => {
   const data = req.body;
   const userId = req.user.id;
@@ -63,8 +64,6 @@ export const getAppointmentsById = async (req, res) => {
 export const updateAppointment = async (req, res) => {
   const id = req.params.id;
   const data = req.body;
-  console.log("🚀 ~ updateAppointment ~ data:", data);
-  console.log("🚀 ~ updateAppointment ~ id:", id);
   const [year, month, day] = data.date.split("-").map(Number);
   const appointmentDate = new Date(Date.UTC(year, month - 1, day));
   console.log("🚀 ~ updateAppointment ~ appointmentDate:", appointmentDate);
@@ -94,6 +93,21 @@ export const deleteAppointment = async (req, res) => {
       return res.status(404).json({ message: "Turno de cita no encontrado" });
     }
     res.json({ message: "Turno fue eliminado" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al eliminar el turno de cita" });
+  }
+};
+
+export const getCategoriesInAppoitment = async (req, res) => {
+  try {
+    const categories = await Categories.find({
+      manager: req.params.id,
+    }).populate("services");
+    if (!categories) {
+      return res.status(404).json({ message: "categorias no encontradas" });
+    }
+    res.json(categories);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al eliminar el turno de cita" });

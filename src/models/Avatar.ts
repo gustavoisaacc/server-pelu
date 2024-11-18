@@ -5,7 +5,6 @@ export type AvatarType = Document & {
   url: string;
   user: PopulatedDoc<UserType>;
 };
-// src/models/Avatar.js
 
 const avatarSchema: Schema = new Schema({
   url: {
