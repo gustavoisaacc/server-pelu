@@ -1,14 +1,16 @@
 import mongoose, { Document, PopulatedDoc, Schema, Types } from "mongoose";
+import { UserType } from "./User.models";
 
 export type DetailType = Document & {
   serviceid: string;
   name: string;
   price: number;
+  date: Date;
   duration: string;
   citaId: string;
-  date: string;
   startTime: string;
   delay: string;
+  userId: PopulatedDoc<UserType>;
 };
 
 const detailSchema: Schema = new Schema({
@@ -24,6 +26,11 @@ const detailSchema: Schema = new Schema({
   },
   price: {
     type: Number,
+    trim: true,
+    require: true,
+  },
+  date: {
+    type: Date,
     trim: true,
     require: true,
   },
@@ -46,6 +53,10 @@ const detailSchema: Schema = new Schema({
     type: String,
     trim: true,
     require: true,
+  },
+  userId: {
+    type: Types.ObjectId,
+    ref: "User",
   },
 });
 const Detail = mongoose.model<DetailType>("Detail", detailSchema);

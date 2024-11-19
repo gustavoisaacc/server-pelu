@@ -38,6 +38,7 @@ export const getAllAppointments = async (req, res) => {
           },
         },
       ],
+      state: { $ne: true },
     });
     res.json(appointments);
   } catch (error) {

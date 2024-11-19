@@ -221,19 +221,34 @@ export const sendConfirmationEmails = (
   clientPhone: string,
   newReservation: any
 ) => {
+  console.log("🚀 ~ newReservation:", newReservation);
+  console.log("🚀 ~ clientPhone:", clientPhone);
+  console.log("🚀 ~ barberEmail:", barberEmail);
+  console.log("🚀 ~ clientEmail:", clientEmail);
+
+  // Valida y formatea la fecha
+  const formattedDate =
+    newReservation.date && !isNaN(new Date(newReservation.date).getTime())
+      ? new Date(newReservation.date).toLocaleDateString("es-ES", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "Fecha inválida";
+
   const subject = "Confirmación de Turno y Pago";
   const text = `¡Gracias por tu reserva! Tu cita está confirmada:
     Servicio: ${newReservation.name}
     Precio: $${newReservation.price}
     Duración: ${newReservation.duration}
-    Fecha: ${newReservation.date}
+    Fecha: ${formattedDate}
     Hora: ${newReservation.startTime}
-    Demora: ${newReservation.delay}
-    Teléfono del cliente: ${clientPhone}`;
+    Demora: ${newReservation.delay}`;
 
   // Enviar correo al cliente
   const clientMailOptions = {
-    from: "tu-email@gmail.com",
+    from: barberEmail,
     to: clientEmail,
     subject,
     text,
@@ -241,7 +256,7 @@ export const sendConfirmationEmails = (
 
   // Enviar correo al peluquero
   const barberMailOptions = {
-    from: "tu-email@gmail.com",
+    from: clientEmail,
     to: barberEmail,
     subject: `Nueva Reserva de Cita`,
     text: `Se ha confirmado una nueva cita:

@@ -146,7 +146,10 @@ export const getUserById = async (req, res) => {
       : null;
 
     // Busca las citas asociadas al usuario
-    const appointments = await Appointment.find({ manager: id }).lean();
+    const appointments = await Appointment.find({
+      manager: id,
+      state: { $ne: true },
+    }).lean();
 
     // Construye el objeto de respuesta
     const fullUser = {
