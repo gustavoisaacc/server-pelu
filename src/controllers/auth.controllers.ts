@@ -65,6 +65,7 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    console.log("🚀 ~ login ~ user:", user)
     if (!user) {
       const error = new Error("Por favor revise su email o password");
       return res.status(401).json({ message: error.message });
