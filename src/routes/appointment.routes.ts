@@ -70,7 +70,6 @@ routeAppointment.post(
 routeAppointment.get("/", isAuth, appointmentController.getAllAppointments);
 routeAppointment.get(
   "/:id",
-  isAuth,
   param("id").isMongoId().withMessage("id no existe"),
   handleInputError,
   appointmentController.getAppointmentsById

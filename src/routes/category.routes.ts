@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { body, param } from "express-validator";
 import { handleInputError } from "../middleware/validator";
 
@@ -9,7 +9,7 @@ import { Service } from "../models/service.models";
 import { isAuth } from "../middleware/validate";
 
 export const routeCategory = express.Router();
-routeCategory.use(isAuth);
+routeCategory.use(isAuth)
 routeCategory.post(
   "/",
   body("name")
