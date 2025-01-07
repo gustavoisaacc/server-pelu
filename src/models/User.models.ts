@@ -27,6 +27,9 @@ const userSchema: Schema = new Schema(
     },
     lastName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
+    country: { type: String, trim: true, default: "Argentina" },
+    state: { type: String, required: true, trim: true },
+    localities: { type: String, required: true, trim: true },
     direction: { type: String, required: true, trim: true },
     email: {
       type: String,

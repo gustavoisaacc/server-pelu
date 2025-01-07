@@ -7,6 +7,7 @@ import { generateJWT } from "../utils/jwt";
 
 export const createAccount = async (req, res) => {
   const { password, email } = req.body;
+  console.log("🚀 ~ createAccount ~  req.body:", req.body);
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -18,8 +19,8 @@ export const createAccount = async (req, res) => {
 
     //generar token de confirmacion de cuenta
     const token = new Token();
-    token.token = generateToken();
     token.user = user.id;
+    token.token = generateToken();
 
     //enviar email
     sendEmail(

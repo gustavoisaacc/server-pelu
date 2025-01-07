@@ -3,10 +3,37 @@ import fs from "fs";
 import path from "path";
 import User from "../models/User.models";
 import { Appointment } from "../models/Appointment.models";
-import { Service } from "../models/service.models";
 
 export const user = (req, res) => {
   return res.json(req.user);
+};
+
+export const filterUser = async (req, res) => {
+  try {
+    const search = (req.query.search || "").toLowerCase();
+    console.log("🚀 ~ filterUser ~ search:", search);
+
+    // Se usa $regex para permitir coincidencias parciales y sin importar las mayúsculas
+    const users = await User.find({
+      $or: [
+        { name: { $regex: search, $options: "i" } }, // Coincidencia parcial en el nombre
+        { lastName: { $regex: search, $options: "i" } }, // Coincidencia parcial en el apellido
+        {
+          $expr: {
+            $eq: [
+              { $toLower: { $concat: ["$name", " ", "$lastName"] } },
+              search,
+            ],
+          },
+        }, // Coincidencia en nombre + apellido
+      ],
+    });
+    console.log("🚀 ~ filterUser ~ users:", users);
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("🚀 ~ filterUser ~ error:", error);
+    res.status(500).json({ message: "Error al filtrar usuarios" });
+  }
 };
 
 export const uploadUserAvatar = async (req, res) => {
@@ -65,7 +92,9 @@ export const getAvatarURL = async (req, res) => {
       const error = new Error("Usuario no valido");
       return res.status(401).json({ message: error.message });
     }
-    const avatarUrl = `${req.protocol}://${req.get("host")}/${avatar.url}`;
+    const avatarUrl = avatar
+      ? `${req.protocol}://${req.get("host")}/${avatar.url}`
+      : null;
     res.status(200).json({ url: avatarUrl });
   } catch (error) {
     console.error("Error subiendo avatar:", error);
@@ -135,6 +164,7 @@ export const getUserById = async (req, res) => {
 
     // Busca al usuario por ID
     const user = await User.findById(id).select("-password").lean();
+
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -153,12 +183,7 @@ export const getUserById = async (req, res) => {
 
     // Construye el objeto de respuesta
     const fullUser = {
-      id: user._id,
-      name: user.name,
-      lastName: user.lastName,
-      phone: user.phone,
-      service: user.service,
-      direction: user.direction,
+      user,
       avatarUrl,
       appointments,
     };

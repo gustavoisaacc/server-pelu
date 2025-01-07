@@ -36,3 +36,4 @@ routeProfile.put(
 
 routeProfile.get("/profile", userController.getAllUser);
 routeProfile.get("/profile/:id", userController.getUserById);
+routeProfile.post("/filter", userController.filterUser);
