@@ -5,7 +5,15 @@ const ROLES = {
   USER: "user",
   CUSTOMER: "customer",
 } as const;
-
+const CATEGORIES = {
+  CORTE_MUJER: "Corte Mujer",
+  CORTE_HOMBRE: "Corte Hombre",
+  CORTE_CLASICO: "Corte Clasico",
+  COLORIMETRIA: "Colorimetría",
+  BARBERIA: "Barbería",
+  PEINADOS: "Peinados",
+  TRATAMIENTO: "Tratamientos Capilares",
+} as const;
 export type UserType = Document & {
   name: string;
   lastName: string;
@@ -45,6 +53,19 @@ const userSchema: Schema = new Schema(
     password: { type: String, required: true, trim: true },
     roles: { type: [String], default: [ROLES.USER] },
     service: { type: String, trim: true },
+    urlInstagram: {
+      type: String,
+      trim: true,
+      require: true,
+    },
+    category: {
+      type: [String],
+      default: [
+        CATEGORIES.CORTE_CLASICO,
+        CATEGORIES.CORTE_HOMBRE,
+        CATEGORIES.CORTE_MUJER,
+      ],
+    },
   },
   {
     timestamps: true,
